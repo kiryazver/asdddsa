@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тревел-блог | Мини Соцсеть</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-flex">
+                <h1>Мини Соцсеть</h1>
+                <div class="user-info" id="user-info"></div>
+            </div>
+            <nav id="main-nav">
+                <ul>
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="#" id="profile-link">Мой профиль</a></li>
+                    <li><a href="friends.html">Друзья</a></li>
+                    <li><a href="gallery.html">Галерея</a></li>
+                    <li><a href="travel.html" class="active">Тревел-блог</a></li>
+                    <li><a href="#" id="logout-btn">Выйти</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="travel-section">
+            <div class="travel-header">
+                <h2>Тревел-блог</h2>
+                <button id="create-travel-btn" class="btn-primary">
+                    <i class="fas fa-plus"></i> Добавить путешествие
+                </button>
+            </div>
+
+            <div class="travel-filters">
+                <div class="filter-group">
+                    <label for="travel-country">Страна:</label>
+                    <select id="travel-country">
+                        <option value="all">Все страны</option>
+                        <!-- Опции будут добавлены через JS -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="travel-type">Тип:</label>
+                    <select id="travel-type">
+                        <option value="all">Все типы</option>
+                        <option value="hiking">Походы</option>
+                        <option value="city">Города</option>
+                        <option value="beach">Пляжный отдых</option>
+                        <option value="roadtrip">Роуд-трип</option>
+                    </select>
+                </div>
+                <button id="apply-filters" class="btn-secondary">Применить</button>
+            </div>
+
+            <div class="travel-container">
+                <div class="travel-posts" id="travel-posts">
+                    <!-- Посты будут загружаться через JavaScript -->
+                    <div class="empty-posts">
+                        <i class="fas fa-globe-europe"></i>
+                        <p>Пока нет путешествий</p>
+                    </div>
+                </div>
+
+                <div class="travel-map-container">
+                    <div id="travel-map"></div>
+                    <div class="map-legend">
+                        <h4>Легенда:</h4>
+                        <div><span class="legend-icon hiking"></span> Походы</div>
+                        <div><span class="legend-icon city"></span> Города</div>
+                        <div><span class="legend-icon beach"></span> Пляжи</div>
+                        <div><span class="legend-icon roadtrip"></span> Роуд-трип</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Модальное окно создания путешествия -->
+            <div id="travel-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <h3>Добавить путешествие</h3>
+                    <form id="travel-form">
+                        <div class="form-group">
+                            <label for="travel-title">Название путешествия</label>
+                            <input type="text" id="travel-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="travel-description">Описание</label>
+                            <textarea id="travel-description" rows="4" required></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="travel-country-select">Страна</label>
+                                <input type="text" id="travel-country-select" list="countries" required>
+                                <datalist id="countries">
+                                    <!-- Список стран будет загружен через JS -->
+                                </datalist>
+                            </div>
+                            <div class="form-group">
+                                <label for="travel-type-select">Тип путешествия</label>
+                                <select id="travel-type-select" required>
+                                    <option value="hiking">Походы</option>
+                                    <option value="city">Города</option>
+                                    <option value="beach">Пляжный отдых</option>
+                                    <option value="roadtrip">Роуд-трип</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="travel-date">Дата путешествия</label>
+                            <input type="month" id="travel-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Отметить на карте:</label>
+                            <div id="travel-map-edit" style="height: 250px; margin-top: 10px;"></div>
+                            <div class="map-controls">
+                                <button type="button" id="add-marker-btn" class="btn-secondary">
+                                    <i class="fas fa-map-marker-alt"></i> Добавить точку
+                                </button>
+                                <button type="button" id="add-route-btn" class="btn-secondary">
+                                    <i class="fas fa-route"></i> Добавить маршрут
+                                </button>
+                                <button type="button" id="clear-map-btn" class="btn-secondary">
+                                    <i class="fas fa-trash-alt"></i> Очистить
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="travel-photos">Фотографии</label>
+                            <input type="file" id="travel-photos" multiple accept="image/*">
+                            <div id="photos-preview" class="photos-preview"></div>
+                        </div>
+                        <button type="submit" class="btn-primary">Опубликовать</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Модальное окно просмотра путешествия -->
+            <div id="view-travel-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <div id="travel-details">
+                        <!-- Детали путешествия будут загружаться через JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/user-display.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/travel.js"></script>
+</body>
+</html>
